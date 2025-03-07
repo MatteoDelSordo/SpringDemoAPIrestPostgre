@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!--    Questa roba è quasi tutta fatta con chat, di mio c'è poco,
+giusto un paio di modifiche di logica di come funzionano i pulsanti,
+per il resto cerco di commentarti tutto in modo che sia comprensibile
+che sicuramente savro scritto tutto in modo caotico-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Studenti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<h1>Gestione Studenti</h1>
+<button onclick="redirectToCreate()">Aggiungi Studente</button>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Età</th>
+        <th>Azioni</th>
+    </tr>
+    </thead>
+    <tbody id="student-table-body">
+    </tbody>
+</table>
+
+<script>
+
+    //Ho pensato di rimandare l'utente alla pagina di creazione dal pulsante
+    function redirectToCreate() {
+       window.location.href = "http://localhost:8080/aggiungi.html";
+   }
+   // Prendere gli studenti dal db
+   async function fetchStudents() {
+       const response = await fetch("http://localhost:8080/api/v1/student/prova");
+       console.log(response);
+       const students = await response.json();
+       console.log(students);
+       const tableBody = document.getElementById("student-table-body");
+       console.log(tableBody);
+       tableBody.innerHTML = "";  // Pulisce la tabella prima di riempirla
+       students.forEach(student => {
+           const row = `<tr>
+               <td>${student.id}</td>
+               <td>${student.name}</td>
+               <td>${student.email}</td>
+               <td>${student.age}</td>
+               <td><button class='delete-btn' onclick='deleteStudent(${student.id})'>Elimina</button></td>
+               <td><button class='update-btn' onclick='updateStudent(${student.id})'>Aggiorna</button></td>
+           </tr>`;
+           tableBody.innerHTML += row;  // Aggiunge la riga della tabella
+       });
+   }
+
+<!--   // Funzione per aggiungere un nuovo studente-->
+<!--   async function addStudent() {-->
+<!--       const newStudent = {-->
+<!--           name: "Nuovo Studente",-->
+<!--           email: "email@example.com",-->
+<!--           age: 25  // Modifica questa parte per farla corrispondere al modello-->
+<!--       };-->
+<!--       await fetch("http://localhost:8080/api/v1/student", {  // Cambiato per corrispondere all'endpoint corretto-->
+<!--           method: "POST",-->
+<!--           headers: { "Content-Type": "application/json" },-->
+<!--           body: JSON.stringify(newStudent)-->
+<!--       });-->
+<!--       fetchStudents();  // Ricarica la lista degli studenti-->
+<!--   }-->
+
+   // Funzione per eliminare uno studente
+   async function deleteStudent(id) {
+       await fetch(`http://localhost:8080/api/v1/student/elimina/${id}`, {
+           method: "DELETE"
+       });
+       fetchStudents();  // Ricarica la lista degli studenti
+   }
+   // Funzione per aggiornare uno studente, è un copia incolla di quello sopra
+   async function updateStudent(id){
+   await fetch(await fetch(`http://localhost:8080/api/v1/student/elimina/${id}`, {
+           method: "UPDATE"
+       });
+       fetchStudents();
+   }
+
+   fetchStudents();  // Chiama la funzione per caricare gli studenti al caricamento della pagina
+</script>
+</body>
+</html>

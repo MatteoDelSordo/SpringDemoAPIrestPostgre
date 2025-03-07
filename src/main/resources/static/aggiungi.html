@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggiungi Studente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+        }
+        label, input {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>Aggiungi Studente</h1>
+<form id="add-student-form">
+    <label for="name">Nome:</label>
+    <input type="text" id="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+
+    <label for="dob">Data di nascita:</label>
+    <input type="date" id="dob" required>
+
+    <button type="submit">Aggiungi Studente</button>
+</form>
+
+<script>
+    document.getElementById("add-student-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const dob = document.getElementById("dob").value;
+
+        const newStudent = { name, email, dob };
+
+        const response = await fetch("http://localhost:8080/api/v1/student/aggiungi", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newStudent)
+        });
+
+        if (response.ok) {
+            alert("Studente aggiunto con successo!");
+            window.location.href = "index.html"; // Reindirizza alla pagina principale
+        } else {
+            alert("Errore nell'aggiunta dello studente.");
+        }
+    });
+</script>
+</body>
+</html>

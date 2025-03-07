@@ -1,8 +1,10 @@
 package com.example.demo.student;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -10,19 +12,29 @@ import java.util.List;
 public class StudentController {
 //Io seguo il video eh, ma tutto dentro lo stesso package mi fa venire un coccolone, altro che perdita di capelli
 
-private final StudentService studentService;
+    private final StudentService studentService;
+
     @Autowired
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
+
     }
 
-@GetMapping()
-    public List<Student> getStudents(){
-        return studentService.getStudent();
-}
+    @GetMapping("/prova")
+    public List<Student> getStudents(Model model) {
+        List<Student> students = studentService.getStudent();
+        model.addAttribute("students", students);
+        return students;
+    }
 
+    @PostMapping(path = ("/aggiungi"))
+    public void registerNewStudent(@RequestBody Student s) {
+        studentService.addStudent(s);
+    }
 
-
-
+    @DeleteMapping(path = ("/elimina/{id}"))
+    public void deleteStudentByButton(@PathVariable Long id) {
+        studentService.deleteStudentById(id);
+    }
 
 }

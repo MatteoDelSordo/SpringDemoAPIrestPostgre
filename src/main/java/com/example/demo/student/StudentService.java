@@ -51,6 +51,7 @@ public class StudentService {
         pippo.setDob(s.getDob());
         pippo.setName(s.getName());
         pippo.setEmail(s.getEmail());
+        studentRepository.delete(pippo);
         studentRepository.save(s);
     }
 

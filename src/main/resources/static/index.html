@@ -63,6 +63,10 @@ che sicuramente savro scritto tutto in modo caotico-->
     function redirectToCreate() {
        window.location.href = "http://localhost:8080/aggiungi.html";
    }
+   //stesssa cosa ma non funziona sto cercando di capire perchè, forse devo passargli lo studente
+   function redirecToUpdate() {
+        window.location.href = "http://localhost:8080/modifica.html";
+   }
    // Prendere gli studenti dal db
    async function fetchStudents() {
        const response = await fetch("http://localhost:8080/api/v1/student/prova");
@@ -79,7 +83,7 @@ che sicuramente savro scritto tutto in modo caotico-->
                <td>${student.email}</td>
                <td>${student.age}</td>
                <td><button class='delete-btn' onclick='deleteStudent(${student.id})'>Elimina</button></td>
-               <td><button class='update-btn' onclick='updateStudent(${student.id})'>Aggiorna</button></td>
+               <td><button class='update-btn' onclick='redirecToUpdate()'>Aggiorna</button></td>
            </tr>`;
            tableBody.innerHTML += row;  // Aggiunge la riga della tabella
        });
@@ -111,7 +115,7 @@ che sicuramente savro scritto tutto in modo caotico-->
    async function updateStudent(id){
    await fetch(await fetch(`http://localhost:8080/api/v1/student/elimina/${id}`, {
            method: "UPDATE"
-       });
+       }));
        fetchStudents();
    }
 

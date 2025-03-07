@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modifica Studente</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+    }
+    label, input {
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>Modifica Studente</h1>
+<form id="edit-student-form">
+  <label for="name">Nome:</label>
+  <input type="text" id="name" required>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" required>
+
+  <label for="dob">Data di nascita:</label>
+  <input type="date" id="dob" required>
+
+  <button type="submit">Salva Modifiche</button>
+</form>
+
+<script>
+  // Funzione per caricare i dati dello studente nel modulo
+  async function loadStudentData(id) {
+      const response = await fetch(`http://localhost:8080/api/v1/student/prova/${id}`);
+      const student = await response.json();
+      document.getElementById("name").value = student.name;
+      document.getElementById("email").value = student.email;
+      document.getElementById("dob").value = student.dob;
+  }
+
+  // Chiamata quando il modulo viene inviato
+  document.getElementById("edit-student-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const id = new URLSearchParams(window.location.search).get('id');
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const dob = document.getElementById("dob").value;
+
+      const updatedStudent = { name, email, dob };
+
+      const response = await fetch(`http://localhost:8080/api/v1/student/modifica/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedStudent)
+      });
+
+      if (response.ok) {
+          alert("Studente modificato con successo!");
+          window.location.href = "index.html"; // Reindirizza alla pagina principale
+      } else {
+          alert("Errore nella modifica dello studente.");
+      }
+  });
+
+  // Carica i dati dello studente all'apertura della pagina
+  const studentId = new URLSearchParams(window.location.search).get('id');
+  if (studentId) {
+      loadStudentData(studentId);
+  }
+</script>
+</body>
+</html>
